@@ -36,8 +36,16 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "Intente colocar otro CUIT.";
-                    return BadRequest(respuesta);
+                    if (respuestaInterna.Mensaje.Contains("cliente"))
+                    {
+                        respuesta.MensajePublico = "Intente colocar otro CUIT.";
+                        return BadRequest(respuesta);
+                    }
+                    else
+                    {
+                        respuesta.MensajePublico = "Intente colocar otro Banco.";
+                        return BadRequest(respuesta);
+                    }
                 }
             }
             catch (Exception ex)
@@ -74,15 +82,31 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet(Name = "GetClientePorCuit")]
+        [HttpGet("{cuit}", Name = "GetClientePorCuit")]
         public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int cuit)
         {
             var respuesta = new RespuestaExterna<Cliente>();
             try
             {
-                if (RespuestaInterna.Exito)
+                var respuestaInterna = await _clienteServicio.ObtenerPorCuitAsync(cuit);
+                if (respuestaInterna.Exito)
+                {
+                    respuesta.Exito = true;
+                    respuesta.Datos = respuestaInterna.Datos;
+                    respuesta.MensajePublico = "Cliente recuperado correctamente";
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.MensajePublico = "CUIT incorrecto";
+                    return BadRequest(respuesta);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                respuesta.MensajePublico = "Hubo un error al recuperar el cliente";
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
         }
 
         [HttpDelete("{cuit}", Name = "EliminarCliente")]
@@ -96,7 +120,7 @@ namespace TP3.Controllers
                 {
                     respuesta.Datos = true;
                     respuesta.Exito = true;
-                    return StatusCode(StatusCodes.Status204NoContent, respuesta);
+                    return StatusCode(StatusCodes.Status200OK, respuesta);
                 }
                 else
                 {

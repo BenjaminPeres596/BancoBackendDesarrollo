@@ -18,6 +18,8 @@ namespace Data.Data
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
         public virtual DbSet<Transferencia> Transferencia { get; set; } 
+        public virtual DbSet<Banco> Banco { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=BancoWebAPI;Persist Security Info=True;Password=WebAPIDesarrollo;Username=postgres");

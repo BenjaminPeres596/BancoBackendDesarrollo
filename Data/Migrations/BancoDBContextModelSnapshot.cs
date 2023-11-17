@@ -22,6 +22,33 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Data.Models.Banco", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Calle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Numero")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RazonSocial")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Telefono")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Banco");
+                });
+
             modelBuilder.Entity("Data.Models.Cliente", b =>
                 {
                     b.Property<int>("Id")
@@ -33,6 +60,9 @@ namespace Data.Migrations
                     b.Property<string>("Apellido")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("BandoId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Calle")
                         .IsRequired()
@@ -53,6 +83,8 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BandoId");
 
                     b.ToTable("Cliente");
                 });
@@ -102,6 +134,9 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("BancoId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Cuit")
                         .HasColumnType("integer");
 
@@ -113,6 +148,8 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BancoId");
 
                     b.ToTable("Empleado");
                 });
@@ -163,6 +200,17 @@ namespace Data.Migrations
                     b.ToTable("Transferencia");
                 });
 
+            modelBuilder.Entity("Data.Models.Cliente", b =>
+                {
+                    b.HasOne("Data.Models.Banco", "Banco")
+                        .WithMany()
+                        .HasForeignKey("BandoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Banco");
+                });
+
             modelBuilder.Entity("Data.Models.Cuenta", b =>
                 {
                     b.HasOne("Data.Models.Cliente", "Cliente")
@@ -180,6 +228,17 @@ namespace Data.Migrations
                     b.Navigation("Cliente");
 
                     b.Navigation("TipoCuenta");
+                });
+
+            modelBuilder.Entity("Data.Models.Empleado", b =>
+                {
+                    b.HasOne("Data.Models.Banco", "Banco")
+                        .WithMany()
+                        .HasForeignKey("BancoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Banco");
                 });
 
             modelBuilder.Entity("Data.Models.Transferencia", b =>

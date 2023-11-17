@@ -16,12 +16,18 @@ namespace Servicios
         {
             var respuesta = new RespuestaInterna<bool>();
             var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cliente.Cuit);
+            var bancoExiste = await _bancoDBContext.Banco.FirstOrDefaultAsync(x => x.Id == cliente.BancoId);
             if (clienteExiste != null)
             {
                 respuesta.Mensaje = "El cliente ya existe";
                 return respuesta;
             }
-
+            if (bancoExiste == null)
+            {
+                respuesta.Mensaje = "El banco no existe";
+                return respuesta;
+            }
+            
             try
             {
                 await _bancoDBContext.Cliente.AddAsync(cliente);
@@ -41,7 +47,7 @@ namespace Servicios
             var respuesta = new RespuestaInterna<List<Cliente>>();
             try
             {
-                var clientes = await _bancoDBContext.Cliente.ToListAsync();
+                var clientes = await _bancoDBContext.Cliente.Include(x => x.Banco).ToListAsync();
                 respuesta.Datos = clientes;
                 respuesta.Exito = true;
                 return respuesta;
