@@ -7,5 +7,7 @@ namespace Servicios
     {
         Task<RespuestaInterna<bool>> AgregarAsync(Cliente cliente);
         Task<RespuestaInterna<List<Cliente>>> ObtenerAsync();
+        Task<RespuestaInterna<Cliente>> ObtenerPorCuitAsync(int cuit);
+        Task<RespuestaInterna<bool>> EliminarAsync(int cuit);
     }
 }

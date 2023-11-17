@@ -54,5 +54,50 @@ namespace Servicios
 
         }
 
+        public async Task<RespuestaInterna<Cliente>> ObtenerPorCuitAsync(int cuit)
+        {
+            var respuesta = new RespuestaInterna<Cliente>();
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            if (clienteExiste == null)
+            {
+                respuesta.Mensaje = "El cliente no existe";
+                return respuesta;
+            }
+            try
+            {
+                respuesta.Datos = clienteExiste;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = ex.Message;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaInterna<bool>> EliminarAsync(int cuit)
+        {
+            var respuesta = new RespuestaInterna<bool>();
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            if (clienteExiste == null)
+            {
+                respuesta.Mensaje = "El cliente no existe";
+                return respuesta;
+            }
+            try
+            {
+                _bancoDBContext.Remove(clienteExiste);
+                await _bancoDBContext.SaveChangesAsync();
+                respuesta.Datos = true;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = ex.Message;
+                return respuesta;
+            }
+        }
     }
 }

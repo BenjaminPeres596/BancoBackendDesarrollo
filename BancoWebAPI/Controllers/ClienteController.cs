@@ -15,14 +15,14 @@ namespace TP3.Controllers
         private readonly ILogger<ClienteController> _logger;
         private readonly IClienteServicio _clienteServicio;
 
-        public ClienteController (IClienteServicio clienteServicio, ILogger<ClienteController> logger)
+        public ClienteController(IClienteServicio clienteServicio, ILogger<ClienteController> logger)
         {
             _clienteServicio = clienteServicio;
             _logger = logger;
         }
 
         [HttpPost(Name = "PostCliente")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post (Cliente cliente)
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cliente cliente)
         {
             var respuesta = new RespuestaExterna<bool>();
             try
@@ -47,17 +47,19 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet(Name ="GetClientes")]
-        public async Task<ActionResult<List<Cliente>>> Get()
+        [HttpGet(Name = "GetClientes")]
+        public async Task<ActionResult<RespuestaExterna<List<Cliente>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<Cliente>>();
             try
             {
                 var respuestaInterna = await _clienteServicio.ObtenerAsync();
-                if (respuestaInterna.Exito) {
+                if (respuestaInterna.Exito)
+                {
                     respuesta.Exito = true;
+                    respuesta.MensajePublico = "Clientes recuperados correctamente";
                     respuesta.Datos = respuestaInterna.Datos;
-                    return respuesta.Datos;
+                    return respuesta;
                 }
                 else
                 {
@@ -65,9 +67,46 @@ namespace TP3.Controllers
                     return BadRequest(respuesta);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 respuesta.MensajePublico = "Hubo un error al recuperar los clientes";
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
+
+        [HttpGet(Name = "GetClientePorCuit")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int cuit)
+        {
+            var respuesta = new RespuestaExterna<Cliente>();
+            try
+            {
+                if (RespuestaInterna.Exito)
+            }
+            
+        }
+
+        [HttpDelete("{cuit}", Name = "EliminarCliente")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int cuit)
+        {
+            var respuesta = new RespuestaExterna<bool>();
+            try
+            {
+                var respuestaInterna = await _clienteServicio.EliminarAsync(cuit);
+                if (respuestaInterna.Exito)
+                {
+                    respuesta.Datos = true;
+                    respuesta.Exito = true;
+                    return StatusCode(StatusCodes.Status204NoContent, respuesta);
+                }
+                else
+                {
+                    respuesta.MensajePublico = "Intente con otro CUIT.";
+                    return BadRequest(respuesta);
+                }
+            }
+            catch (Exception ex)
+            {
+                respuesta.MensajePublico = "Ocurrio un error al eliminar el cliente";
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
