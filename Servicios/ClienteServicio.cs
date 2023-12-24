@@ -19,11 +19,13 @@ namespace Servicios
             var bancoExiste = await _bancoDBContext.Banco.FirstOrDefaultAsync(x => x.Id == cliente.BancoId);
             if (clienteExiste != null)
             {
+                respuesta.Datos = false;
                 respuesta.Mensaje = "El cliente ya existe";
                 return respuesta;
             }
             if (bancoExiste == null)
             {
+                respuesta.Datos = false;
                 respuesta.Mensaje = "El banco no existe";
                 return respuesta;
             }
@@ -37,8 +39,10 @@ namespace Servicios
                 respuesta.Datos = true;
                 return respuesta;
             }
-            catch
+            catch (Exception ex)
             {
+                respuesta.Datos = false;
+                respuesta.Mensaje = "No se pudo agregar al cliente. Detalles: " + ex.Message;
                 return respuesta;
             }
         }
@@ -55,7 +59,7 @@ namespace Servicios
             }
             catch (Exception ex)
             {
-                respuesta.Mensaje = ex.Message;
+                respuesta.Mensaje = "No se pudo recuperar los clientes. Detalles: " + ex.Message;
                 return respuesta;
             }
 
@@ -78,7 +82,7 @@ namespace Servicios
             }
             catch (Exception ex)
             {
-                respuesta.Mensaje = ex.Message;
+                respuesta.Mensaje = "No se pudo obtener el cliente. Detalles: " + ex.Message;
                 return respuesta;
             }
         }
@@ -89,6 +93,7 @@ namespace Servicios
             var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
             if (clienteExiste == null)
             {
+                respuesta.Datos = false;
                 respuesta.Mensaje = "El cliente no existe";
                 return respuesta;
             }
@@ -102,7 +107,7 @@ namespace Servicios
             }
             catch (Exception ex)
             {
-                respuesta.Mensaje = ex.Message;
+                respuesta.Mensaje = "No se pudo eliminar al cliente. Detalles: " + ex.Message;
                 return respuesta;
             }
         }

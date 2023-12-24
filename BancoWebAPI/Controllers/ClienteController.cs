@@ -48,9 +48,9 @@ namespace TP3.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                respuesta.MensajePublico = respuestaInterna.Mensaje;/*"Ocurrio un error al agregar al Cliente.";*/
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
@@ -59,9 +59,9 @@ namespace TP3.Controllers
         public async Task<ActionResult<RespuestaExterna<List<Cliente>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<Cliente>>();
+            var respuestaInterna = await _clienteServicio.ObtenerAsync();
             try
             {
-                var respuestaInterna = await _clienteServicio.ObtenerAsync();
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Exito = true;
@@ -75,9 +75,9 @@ namespace TP3.Controllers
                     return BadRequest(respuesta);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                respuesta.MensajePublico = "Hubo un error al recuperar los clientes";
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
@@ -86,9 +86,9 @@ namespace TP3.Controllers
         public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int cuit)
         {
             var respuesta = new RespuestaExterna<Cliente>();
+            var respuestaInterna = await _clienteServicio.ObtenerPorCuitAsync(cuit);
             try
             {
-                var respuestaInterna = await _clienteServicio.ObtenerPorCuitAsync(cuit);
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Exito = true;
@@ -102,9 +102,9 @@ namespace TP3.Controllers
                     return BadRequest(respuesta);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                respuesta.MensajePublico = "Hubo un error al recuperar el cliente";
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
@@ -113,9 +113,9 @@ namespace TP3.Controllers
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int cuit)
         {
             var respuesta = new RespuestaExterna<bool>();
+            var respuestaInterna = await _clienteServicio.EliminarAsync(cuit);
             try
             {
-                var respuestaInterna = await _clienteServicio.EliminarAsync(cuit);
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Datos = true;
@@ -128,9 +128,9 @@ namespace TP3.Controllers
                     return BadRequest(respuesta);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                respuesta.MensajePublico = "Ocurrio un error al eliminar el cliente";
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }

@@ -25,17 +25,17 @@ namespace BancoWebAPI.Controllers
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int cuit)
         {
             var respuesta = new RespuestaExterna<bool>();
+            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, cuit);
             try
             {
-                var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, cuit);
                 respuesta.MensajePublico = respuestaInterna.Mensaje;
                 respuesta.Datos = respuestaInterna.Datos;
                 respuesta.Exito = respuestaInterna.Exito;
                 return respuesta;
             }
-            catch (Exception ex)
+            catch
             {
-                respuesta.MensajePublico = "Ocurrio un error al agregar la cuenta.";
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }

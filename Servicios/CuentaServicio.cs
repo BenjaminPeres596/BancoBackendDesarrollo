@@ -24,11 +24,10 @@ namespace Servicios
             try
             {
                 var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Cuit == cuit);
-                var tipocuentaexiste = await _bancoDBContext.TipoCuenta.FirstOrDefaultAsync(tc => tc.Id == cuenta.TipoCuentaId);
+                var tipocuentaexiste = await _bancoDBContext.TipoCuenta.FirstOrDefaultAsync(t => t.Id == cuenta.TipoCuentaId);
                 if (tipocuentaexiste == null)
                 {
                     respuesta.Datos = false;
-                    respuesta.Exito = false;
                     respuesta.Mensaje = "No existe el tipo de cuenta";
                     return respuesta;
                 }
@@ -42,6 +41,8 @@ namespace Servicios
                     {
                         cuenta.Saldo = 100000;
                     }
+                    cuenta.TipoCuenta = tipocuentaexiste;
+                    cuenta.Cliente = clienteexiste;
                     await _bancoDBContext.Cuenta.AddAsync(cuenta);
                     await _bancoDBContext.SaveChangesAsync();
                     return respuesta;
@@ -50,15 +51,13 @@ namespace Servicios
                 {
                     respuesta.Mensaje = "El cliente no existe";
                     respuesta.Datos = false;
-                    respuesta.Exito = false;
                     return respuesta;
                 }
             }
             catch (Exception ex)
             {
-                respuesta.Exito = false;
                 respuesta.Datos = false;
-                respuesta.Mensaje = ex.Message;
+                respuesta.Mensaje = "No se pudo crear la cuenta. Detalles: " + ex.Message;
                 return respuesta;
             }
         }
