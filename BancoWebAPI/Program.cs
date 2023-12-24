@@ -18,6 +18,7 @@ builder.Services.AddDbContext<BancoDBContext>(options =>
 });
 
 builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
+builder.Services.AddScoped<ICuentaServicio, CuentaServicio>();
 
 var app = builder.Build();
 

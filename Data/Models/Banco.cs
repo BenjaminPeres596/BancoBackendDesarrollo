@@ -14,7 +14,6 @@ namespace Data.Models
         public int Id { get; set; }
         public string RazonSocial { get; set; }
         public int Telefono { get; set; }
-        //Como un Cliente se logea al banco?
         public string Calle { get; set; }
         public int Numero { get; set; }
     }

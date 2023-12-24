@@ -30,6 +30,7 @@ namespace Servicios
             
             try
             {
+                cliente.Banco = bancoExiste;
                 await _bancoDBContext.Cliente.AddAsync(cliente);
                 await _bancoDBContext.SaveChangesAsync();
                 respuesta.Exito = true;

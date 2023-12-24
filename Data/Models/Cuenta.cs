@@ -13,7 +13,7 @@ namespace Data.Models
         [Key]
         public int Id { get; set; }
         public string NroCuenta { get; set; }
-        public DateOnly FechaAlta { get; set; }
+        public string FechaAlta { get; set; }
         public float Saldo { get; set; }
         [ForeignKey("Cliente")]
         public int ClienteId { get; set; }

@@ -25,9 +25,9 @@ namespace TP3.Controllers
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cliente cliente)
         {
             var respuesta = new RespuestaExterna<bool>();
+            var respuestaInterna = await _clienteServicio.AgregarAsync(cliente);
             try
             {
-                var respuestaInterna = await _clienteServicio.AgregarAsync(cliente);
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Exito = true;
@@ -50,7 +50,7 @@ namespace TP3.Controllers
             }
             catch (Exception ex)
             {
-                respuesta.MensajePublico = "Ocurrio un error al agregar al Cliente.";
+                respuesta.MensajePublico = respuestaInterna.Mensaje;/*"Ocurrio un error al agregar al Cliente.";*/
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
