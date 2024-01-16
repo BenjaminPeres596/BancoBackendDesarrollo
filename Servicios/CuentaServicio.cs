@@ -61,5 +61,79 @@ namespace Servicios
                 return respuesta;
             }
         }
+        public async Task<RespuestaInterna<List<Cuenta>>> ObtenerAsync()
+        {
+            var respuesta = new RespuestaInterna<List<Cuenta>>();
+            try
+            {
+                var cuentas = await _bancoDBContext.Cuenta.ToListAsync();
+                respuesta.Datos = cuentas;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo recuperar las cuentas. Detalles: " + ex.Message;
+                return respuesta;
+            }
+
+        }
+
+        public async Task<RespuestaInterna<List<Cuenta>>> ObtenerPorCuitAsync(int cuit)
+        {
+            var respuesta = new RespuestaInterna<List<Cuenta>>();
+            var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Cuit == cuit);
+            if (clienteexiste == null)
+            {
+                respuesta.Mensaje = "No existe el cliente, intente con otro CUIT.";
+                return respuesta;
+            }
+            try
+            {
+                var cuentas = await _bancoDBContext.Cuenta.Include(x => x.TipoCuenta).Include(x => x.Cliente).Where(x => x.Cliente.Cuit == cuit).ToListAsync();
+                respuesta.Datos = cuentas;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo recuperar las cuentas del cliente. Detalles: " + ex.Message;
+                return respuesta;
+            }
+
+        }
+
+        public async Task<RespuestaInterna<bool>> EliminarAsync(int nroCuenta, int cuit)
+        {
+            var respuesta = new RespuestaInterna<bool>();
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            if (clienteExiste == null)
+            {
+                respuesta.Datos = false;
+                respuesta.Mensaje = "El cliente no existe";
+                return respuesta;
+            }
+            var cuentas = await _bancoDBContext.Cuenta.Where(x => x.Cliente.Cuit == cuit).ToListAsync();
+            var cuentaCliente = cuentas.FirstOrDefault(x => x.NroCuenta == nroCuenta);
+            if (cuentaCliente == null)
+            {
+                respuesta.Datos = false;
+                respuesta.Mensaje = "La cuenta no existe";
+                return respuesta;
+            }
+            try
+            {
+                _bancoDBContext.Remove(cuentaCliente);
+                await _bancoDBContext.SaveChangesAsync();
+                respuesta.Datos = true;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo eliminar la cuenta. Detalles: " + ex.Message;
+                return respuesta;
+            }
+        }
     }
 }
