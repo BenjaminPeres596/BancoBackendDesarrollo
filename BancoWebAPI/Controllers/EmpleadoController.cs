@@ -10,22 +10,22 @@ namespace BancoWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CuentaController : ControllerBase
+    public class EmpleadoController : ControllerBase
     {
-        private readonly ILogger<CuentaController> _logger;
-        private readonly ICuentaServicio _cuentaServicio;
+        private readonly ILogger<EmpleadoController> _logger;
+        private readonly IEmpleadoServicio _empleadoServicio;
 
-        public CuentaController(ICuentaServicio cuentaServicio, ILogger<CuentaController> logger)
+        public EmpleadoController(IEmpleadoServicio empleadoServicio, ILogger<EmpleadoController> logger)
         {
-            _cuentaServicio = cuentaServicio;
+            _empleadoServicio = empleadoServicio;
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int cuit)
+        [HttpPost(Name = "PostEmpleado")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Empleado empleado)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, cuit);
+            var respuestaInterna = await _empleadoServicio.AgregarEmpleado(empleado);
             try
             {
                 respuesta.MensajePublico = respuestaInterna.Mensaje;
@@ -40,17 +40,17 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "GetCuentas")]
-        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get()
+        [HttpGet(Name = "GetEmpleados")]
+        public async Task<ActionResult<RespuestaExterna<List<Empleado>>>> Get()
         {
-            var respuesta = new RespuestaExterna<List<Cuenta>>();
-            var respuestaInterna = await _cuentaServicio.ObtenerAsync();
+            var respuesta = new RespuestaExterna<List<Empleado>>();
+            var respuestaInterna = await _empleadoServicio.ObtenerAsync();
             try
             {
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Exito = true;
-                    respuesta.MensajePublico = "Cuentas recuperados correctamente";
+                    respuesta.MensajePublico = "Empleados recuperados correctamente";
                     respuesta.Datos = respuestaInterna.Datos;
                     return respuesta;
                 }
@@ -67,18 +67,18 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("{cuit}", Name = "GetCuentasPorCuit")]
-        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(int cuit)
+        [HttpGet("{cuit}", Name = "GetEmpleadoPorLegajo")]
+        public async Task<ActionResult<RespuestaExterna<Empleado>>> Get(int legajo)
         {
-            var respuesta = new RespuestaExterna<List<Cuenta>>();
-            var respuestaInterna = await _cuentaServicio.ObtenerPorCuitAsync(cuit);
+            var respuesta = new RespuestaExterna<Empleado>();
+            var respuestaInterna = await _empleadoServicio.ObtenerPorLegajoAsync(legajo);
             try
             {
                 if (respuestaInterna.Exito)
                 {
                     respuesta.Exito = true;
                     respuesta.Datos = respuestaInterna.Datos;
-                    respuesta.MensajePublico = "Cuenta recuperada correctamente";
+                    respuesta.MensajePublico = "Empleado recuperado correctamente";
                     return respuesta;
                 }
                 else
@@ -94,11 +94,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{cuit},{nroCuenta}", Name = "EliminarCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int nroCuenta, int cuit)
+        [HttpDelete("{legajo}", Name = "DeleteEmpleado")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int legajo)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.EliminarAsync(nroCuenta,cuit);
+            var respuestaInterna = await _empleadoServicio.EliminarAsync(legajo);
             try
             {
                 if (respuestaInterna.Exito)
@@ -109,13 +109,7 @@ namespace BancoWebAPI.Controllers
                 }
                 else
                 {
-                    if (respuestaInterna.Mensaje.Contains("cuit")){
-                        respuesta.MensajePublico = "Intente con otro CUIT.";
-                    }
-                    if (respuestaInterna.Mensaje.Contains("cuenta"))
-                    {
-                        respuesta.MensajePublico = "Intente con otro numero de cuenta.";
-                    }
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }

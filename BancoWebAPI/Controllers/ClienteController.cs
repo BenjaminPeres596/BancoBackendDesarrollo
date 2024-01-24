@@ -71,7 +71,7 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "Hubo un error al recuperar los clientes";
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }
@@ -98,7 +98,7 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "CUIT incorrecto";
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }
@@ -124,7 +124,7 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "Intente con otro CUIT.";
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }

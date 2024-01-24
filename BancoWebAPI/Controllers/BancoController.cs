@@ -36,8 +36,8 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                        respuesta.MensajePublico = "Intente colocar otra RazonSocial.";
-                        return BadRequest(respuesta);
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return BadRequest(respuesta);
                 }
             }
             catch
@@ -63,7 +63,7 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "Hubo un error al recuperar los bancos";
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }
@@ -89,7 +89,7 @@ namespace TP3.Controllers
                 }
                 else
                 {
-                    respuesta.MensajePublico = "Intente con otra razon social.";
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
                     return BadRequest(respuesta);
                 }
             }
