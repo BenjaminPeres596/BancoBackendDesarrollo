@@ -77,7 +77,7 @@ namespace Servicios
                 }
                 else
                 {
-                    var transferencias = await _bancoDBContext.Transferencia.Include(x => x.CuentaOrigen).Include(x => x.CuentaDestino).Where(x => x.CuentaOrigen.NroCuenta == nroCuenta).ToListAsync();
+                    var transferencias = await _bancoDBContext.Transferencia.Include(x => x.CuentaOrigen).Include(x => x.CuentaDestino).Where(x => x.CuentaOrigen.NroCuenta == nroCuenta || x.CuentaDestino.NroCuenta == nroCuenta).ToListAsync();
                     respuesta.Datos = transferencias;
                     respuesta.Exito = true;
                     respuesta.Mensaje = "Transferencias recuperadas correctamente";

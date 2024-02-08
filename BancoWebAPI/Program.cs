@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,8 +22,17 @@ builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
 builder.Services.AddScoped<ICuentaServicio, CuentaServicio>();
 builder.Services.AddScoped<ITipoCuentaServicio, TipoCuentaServicio>();
 builder.Services.AddScoped<IBancoServicio, BancoServicio>();
+builder.Services.AddScoped<ITransferenciaServicio, TransferenciaServicio>();
+builder.Services.AddScoped<IEmpleadoServicio, EmpleadoServicio>();
 
 var app = builder.Build();
+
+app.UseCors(options =>
+{
+    options.WithOrigins("http://localhost:3000")
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

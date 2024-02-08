@@ -68,7 +68,7 @@ namespace Servicios
         public async Task<RespuestaInterna<Cliente>> ObtenerPorCuitAsync(int cuit)
         {
             var respuesta = new RespuestaInterna<Cliente>();
-            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            var clienteExiste = await _bancoDBContext.Cliente.Include(x => x.Banco).FirstOrDefaultAsync(x => x.Cuit == cuit);
             if (clienteExiste == null)
             {
                 respuesta.Mensaje = "El cliente no existe";

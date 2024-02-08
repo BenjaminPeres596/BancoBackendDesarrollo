@@ -15,10 +15,10 @@ namespace Data.Models
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         //Como un Cliente se logea al banco?
+        public string Usuario {  get; set; }
+        public string Clave {  get; set; }
         public int Cuit { get; set; }
         public string Mail { get; set; }
-        public string Calle { get; set; }
-        public int Numero { get; set; }
         [ForeignKey("Banco")]
         public int BancoId { get; set; }
         public Banco Banco { get; set; }
