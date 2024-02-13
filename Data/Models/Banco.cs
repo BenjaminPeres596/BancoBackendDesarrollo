@@ -13,8 +13,8 @@ namespace Data.Models
         [Key]
         public int Id { get; set; }
         public string RazonSocial { get; set; }
-        public int Telefono { get; set; }
+        public long Telefono { get; set; }
         public string Calle { get; set; }
-        public int Numero { get; set; }
+        public long Numero { get; set; }
     }
 }

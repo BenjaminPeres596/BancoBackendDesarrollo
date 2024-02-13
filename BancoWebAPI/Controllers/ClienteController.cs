@@ -55,6 +55,33 @@ namespace TP3.Controllers
             }
         }
 
+        [HttpPost("{dni},{usuario},{contraseña}", Name = "LoginAuth")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(int dni, string usuario, string contraseña)
+        {
+            var respuesta = new RespuestaExterna<Cliente>();
+            var respuestaInterna = await _clienteServicio.LoginAuth(dni, usuario, contraseña);
+            try
+            {
+                if (respuestaInterna.Exito)
+                {
+                    respuesta.Exito = true;
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    respuesta.Datos = respuestaInterna.Datos;
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return respuesta;
+                }
+            }
+            catch (Exception ex)
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
+
         [HttpGet(Name = "GetClientes")]
         public async Task<ActionResult<RespuestaExterna<List<Cliente>>>> Get()
         {
@@ -82,11 +109,11 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet("{cuit}", Name = "GetClientePorCuit")]
-        public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int cuit)
+        [HttpGet("{dni}", Name = "GetClientePorDni")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int dni)
         {
             var respuesta = new RespuestaExterna<Cliente>();
-            var respuestaInterna = await _clienteServicio.ObtenerPorCuitAsync(cuit);
+            var respuestaInterna = await _clienteServicio.ObtenerPorDniAsync(dni);
             try
             {
                 if (respuestaInterna.Exito)
@@ -109,7 +136,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpDelete("{cuit}", Name = "EliminarCliente")]
+        [HttpDelete("{dni}", Name = "EliminarCliente")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int cuit)
         {
             var respuesta = new RespuestaExterna<bool>();

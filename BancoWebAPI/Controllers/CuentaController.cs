@@ -22,10 +22,10 @@ namespace BancoWebAPI.Controllers
         }
 
         [HttpPost(Name = "PostCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int cuit)
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int dni)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, cuit);
+            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, dni);
             try
             {
                 respuesta.MensajePublico = respuestaInterna.Mensaje;
@@ -67,11 +67,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("{cuit}", Name = "GetCuentasPorCuit")]
-        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(int cuit)
+        [HttpGet("{dni}", Name = "GetCuentasPorDni")]
+        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(int dni)
         {
             var respuesta = new RespuestaExterna<List<Cuenta>>();
-            var respuestaInterna = await _cuentaServicio.ObtenerPorCuitAsync(cuit);
+            var respuestaInterna = await _cuentaServicio.ObtenerPorDniAsync(dni);
             try
             {
                 if (respuestaInterna.Exito)
@@ -94,11 +94,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{cuit},{nroCuenta}", Name = "EliminarCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int nroCuenta, int cuit)
+        [HttpDelete("{id},{dni}", Name = "EliminarCuenta")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int id, int dni)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.EliminarAsync(nroCuenta,cuit);
+            var respuestaInterna = await _cuentaServicio.EliminarAsync(id,dni);
             try
             {
                 if (respuestaInterna.Exito)
@@ -110,7 +110,7 @@ namespace BancoWebAPI.Controllers
                 else
                 {
                     if (respuestaInterna.Mensaje.Contains("cuit")){
-                        respuesta.MensajePublico = "Intente con otro CUIT.";
+                        respuesta.MensajePublico = "Intente con otro DNI.";
                     }
                     if (respuestaInterna.Mensaje.Contains("cuenta"))
                     {

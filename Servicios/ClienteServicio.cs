@@ -2,6 +2,7 @@
 using Data.Models;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace Servicios
 {
@@ -15,7 +16,7 @@ namespace Servicios
         public async Task<RespuestaInterna<bool>> AgregarAsync(Cliente cliente)
         {
             var respuesta = new RespuestaInterna<bool>();
-            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cliente.Cuit);
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Dni == cliente.Dni);
             var bancoExiste = await _bancoDBContext.Banco.FirstOrDefaultAsync(x => x.Id == cliente.BancoId);
             if (clienteExiste != null)
             {
@@ -65,10 +66,10 @@ namespace Servicios
 
         }
 
-        public async Task<RespuestaInterna<Cliente>> ObtenerPorCuitAsync(int cuit)
+        public async Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(int dni)
         {
             var respuesta = new RespuestaInterna<Cliente>();
-            var clienteExiste = await _bancoDBContext.Cliente.Include(x => x.Banco).FirstOrDefaultAsync(x => x.Cuit == cuit);
+            var clienteExiste = await _bancoDBContext.Cliente.Include(x => x.Banco).FirstOrDefaultAsync(x => x.Dni == dni);
             if (clienteExiste == null)
             {
                 respuesta.Mensaje = "El cliente no existe";
@@ -87,10 +88,10 @@ namespace Servicios
             }
         }
 
-        public async Task<RespuestaInterna<bool>> EliminarAsync(int cuit)
+        public async Task<RespuestaInterna<bool>> EliminarAsync(int dni)
         {
             var respuesta = new RespuestaInterna<bool>();
-            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Dni == dni);
             if (clienteExiste == null)
             {
                 respuesta.Datos = false;
@@ -108,6 +109,33 @@ namespace Servicios
             catch (Exception ex)
             {
                 respuesta.Mensaje = "No se pudo eliminar al cliente. Detalles: " + ex.Message;
+                return respuesta;
+            }
+        }
+
+        public async Task<RespuestaInterna<Cliente>> LoginAuth(int dni, string usuario, string contraseña)
+        {
+            var respuesta = new RespuestaInterna<Cliente>();
+            try
+            {
+                var clienteExiste = await _bancoDBContext.Cliente.Where(x => x.Dni == dni && x.Usuario == usuario && x.Clave == contraseña).FirstOrDefaultAsync();
+
+                if (clienteExiste == null)
+                {
+                    respuesta.Mensaje = "Dni, usuario o contraseña incorrectos, intente nuevamente.";
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.Datos = clienteExiste;
+                    respuesta.Exito = true;
+                    respuesta.Mensaje = "Inicio de sesion exitoso.";
+                    return respuesta;
+                }
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo verificar al cliente. Detalles: " + ex.Message;
                 return respuesta;
             }
         }

@@ -18,13 +18,13 @@ namespace Servicios
             _bancoDBContext = new BancoDBContext();
         }
 
-        public async Task<RespuestaInterna<bool>> Post(Transferencia transferencia, int nroCuenta1, int nroCuenta2)
+        public async Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string CbuOrigen, string CbuDestino)
         {
             var respuesta = new RespuestaInterna<bool>();
             try
             {
-                var cuentaOrigenExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.NroCuenta == nroCuenta1);
-                var cuentaDestinoExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.NroCuenta == nroCuenta2);
+                var cuentaOrigenExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.Cbu == CbuOrigen);
+                var cuentaDestinoExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.Cbu == CbuDestino);
                 if (cuentaOrigenExiste == null)
                 {
                     respuesta.Datos = false;
@@ -47,7 +47,11 @@ namespace Servicios
                 {
                     respuesta.Datos = true;
                     respuesta.Exito = true;
+                    transferencia.CuentaDestinoId = cuentaDestinoExiste.Id;
+                    transferencia.CuentaOrigenId = cuentaOrigenExiste.Id;
                     respuesta.Mensaje = "Transferencia exitosa";
+                    transferencia.CuentaDestino = cuentaDestinoExiste;
+                    transferencia.CuentaOrigen = cuentaOrigenExiste;
                     cuentaOrigenExiste.Saldo = cuentaOrigenExiste.Saldo - transferencia.Monto;
                     cuentaDestinoExiste.Saldo = cuentaDestinoExiste.Saldo + transferencia.Monto;
                     await _bancoDBContext.Transferencia.AddAsync(transferencia);
@@ -64,12 +68,12 @@ namespace Servicios
             }
         }
 
-        public async Task<RespuestaInterna<List<Transferencia>>> Get(int nroCuenta)
+        public async Task<RespuestaInterna<List<Transferencia>>> Get(int id)
         {
             var respuesta = new RespuestaInterna<List<Transferencia>>();
             try
             {
-                var cuentaExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(x => x.NroCuenta == nroCuenta);
+                var cuentaExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(x => x.Id == id);
                 if (cuentaExiste == null)
                 {
                     respuesta.Mensaje = "No existe la cuenta.";
@@ -77,7 +81,7 @@ namespace Servicios
                 }
                 else
                 {
-                    var transferencias = await _bancoDBContext.Transferencia.Include(x => x.CuentaOrigen).Include(x => x.CuentaDestino).Where(x => x.CuentaOrigen.NroCuenta == nroCuenta || x.CuentaDestino.NroCuenta == nroCuenta).ToListAsync();
+                    var transferencias = await _bancoDBContext.Transferencia.Include(x => x.CuentaOrigen).Include(x => x.CuentaDestino).Where(x => x.CuentaOrigen.Id == id || x.CuentaDestino.Id == id).ToListAsync();
                     respuesta.Datos = transferencias;
                     respuesta.Exito = true;
                     respuesta.Mensaje = "Transferencias recuperadas correctamente";

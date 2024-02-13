@@ -12,7 +12,7 @@ namespace Data.Models
     {
         [Key]
         public int Id { get; set; }
-        public int Monto { get; set; }
+        public long Monto { get; set; }
         public DateTime Fecha { get; set; }
         [ForeignKey("CuentaOrigen")]
         public int CuentaOrigenId { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(BancoDBContext))]
-    partial class BancoDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240210220909_SeventhMigration")]
+    partial class SeventhMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,15 +37,15 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Numero")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Numero")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RazonSocial")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Telefono")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Telefono")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -68,8 +71,8 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Dni")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Dni")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Mail")
                         .IsRequired()
@@ -98,16 +101,15 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Cbu")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("ClienteId")
                         .HasColumnType("integer");
 
                     b.Property<string>("FechaAlta")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("NroCuenta")
+                        .HasColumnType("integer");
 
                     b.Property<float>("Saldo")
                         .HasColumnType("real");
@@ -139,11 +141,11 @@ namespace Data.Migrations
                     b.Property<int>("BancoId")
                         .HasColumnType("integer");
 
-                    b.Property<long>("Dni")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Cuit")
+                        .HasColumnType("integer");
 
-                    b.Property<long>("Legajo")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Legajo")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -190,8 +192,8 @@ namespace Data.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("Monto")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Monto")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

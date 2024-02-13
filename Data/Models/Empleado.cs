@@ -14,8 +14,8 @@ namespace Data.Models
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public int Cuit { get; set; }
-        public int Legajo { get; set; }
+        public long Dni { get; set; }
+        public long Legajo { get; set; }
         [ForeignKey("Banco")]
         public int BancoId { get; set; }
         public Banco Banco { get; set;}

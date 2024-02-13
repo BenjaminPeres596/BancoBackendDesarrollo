@@ -7,7 +7,8 @@ namespace Servicios
     {
         Task<RespuestaInterna<bool>> AgregarAsync(Cliente cliente);
         Task<RespuestaInterna<List<Cliente>>> ObtenerAsync();
-        Task<RespuestaInterna<Cliente>> ObtenerPorCuitAsync(int cuit);
-        Task<RespuestaInterna<bool>> EliminarAsync(int cuit);
+        Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(int dni);
+        Task<RespuestaInterna<bool>> EliminarAsync(int dni);
+        Task<RespuestaInterna<Cliente>> LoginAuth(int dni ,string usuario, string contraseña);
     }
 }

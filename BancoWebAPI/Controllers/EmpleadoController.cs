@@ -67,7 +67,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("{cuit}", Name = "GetEmpleadoPorLegajo")]
+        [HttpGet("{legajo}", Name = "GetEmpleadoPorLegajo")]
         public async Task<ActionResult<RespuestaExterna<Empleado>>> Get(int legajo)
         {
             var respuesta = new RespuestaExterna<Empleado>();
