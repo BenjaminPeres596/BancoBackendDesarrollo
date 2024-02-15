@@ -137,10 +137,10 @@ namespace TP3.Controllers
         }
 
         [HttpDelete("{dni}", Name = "EliminarCliente")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int cuit)
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int dni)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _clienteServicio.EliminarAsync(cuit);
+            var respuestaInterna = await _clienteServicio.EliminarAsync(dni);
             try
             {
                 if (respuestaInterna.Exito)

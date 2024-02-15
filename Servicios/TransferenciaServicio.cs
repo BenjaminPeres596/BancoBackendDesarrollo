@@ -18,13 +18,14 @@ namespace Servicios
             _bancoDBContext = new BancoDBContext();
         }
 
-        public async Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string CbuOrigen, string CbuDestino)
+        public async Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string CbuOrigen, string CbuDestino, float monto, int motivoId)
         {
             var respuesta = new RespuestaInterna<bool>();
             try
             {
                 var cuentaOrigenExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.Cbu == CbuOrigen);
                 var cuentaDestinoExiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.Cbu == CbuDestino);
+                var motivoExiste = await _bancoDBContext.TipoMotivo.FirstOrDefaultAsync(m => m.Id == motivoId);
                 if (cuentaOrigenExiste == null)
                 {
                     respuesta.Datos = false;
@@ -37,23 +38,31 @@ namespace Servicios
                     respuesta.Mensaje = "No existe la cuenta destino";
                     return respuesta;
                 }
-                else if (cuentaOrigenExiste != null && (cuentaOrigenExiste.Saldo - transferencia.Monto) < 0)
+                else if (cuentaOrigenExiste != null && (cuentaOrigenExiste.Saldo - monto) < 0)
                 {
                     respuesta.Datos = false;
                     respuesta.Mensaje = "El monto de la cuenta no es suficiente para realizar la transferencia";
                     return respuesta;
                 }
+                else if (motivoExiste == null)
+                {
+                    respuesta.Datos = false;
+                    respuesta.Mensaje = "No existe el motivo";
+                    return respuesta;
+                }
                 else
                 {
-                    respuesta.Datos = true;
-                    respuesta.Exito = true;
                     transferencia.CuentaDestinoId = cuentaDestinoExiste.Id;
                     transferencia.CuentaOrigenId = cuentaOrigenExiste.Id;
-                    respuesta.Mensaje = "Transferencia exitosa";
                     transferencia.CuentaDestino = cuentaDestinoExiste;
                     transferencia.CuentaOrigen = cuentaOrigenExiste;
-                    cuentaOrigenExiste.Saldo = cuentaOrigenExiste.Saldo - transferencia.Monto;
-                    cuentaDestinoExiste.Saldo = cuentaDestinoExiste.Saldo + transferencia.Monto;
+                    transferencia.TipoMotivo = motivoExiste;
+                    transferencia.Monto = long.Parse(monto.ToString());
+                    cuentaOrigenExiste.Saldo = cuentaOrigenExiste.Saldo - monto;
+                    cuentaDestinoExiste.Saldo = cuentaDestinoExiste.Saldo + monto;
+                    respuesta.Datos = true;
+                    respuesta.Exito = true;
+                    respuesta.Mensaje = "Transferencia exitosa";
                     await _bancoDBContext.Transferencia.AddAsync(transferencia);
                     await _bancoDBContext.SaveChangesAsync();
                     return respuesta;

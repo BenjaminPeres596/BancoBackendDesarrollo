@@ -3,6 +3,7 @@ using System;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(BancoDBContext))]
-    partial class BancoDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240214190954_TenthMigration")]
+    partial class TenthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,23 +180,6 @@ namespace Data.Migrations
                     b.ToTable("TipoCuenta");
                 });
 
-            modelBuilder.Entity("Data.Models.TipoMotivo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TipoMotivo");
-                });
-
             modelBuilder.Entity("Data.Models.Transferencia", b =>
                 {
                     b.Property<int>("Id")
@@ -214,16 +200,11 @@ namespace Data.Migrations
                     b.Property<long>("Monto")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("TipoMotivoId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CuentaDestinoId");
 
                     b.HasIndex("CuentaOrigenId");
-
-                    b.HasIndex("TipoMotivoId");
 
                     b.ToTable("Transferencia");
                 });
@@ -283,17 +264,9 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Models.TipoMotivo", "TipoMotivo")
-                        .WithMany()
-                        .HasForeignKey("TipoMotivoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CuentaDestino");
 
                     b.Navigation("CuentaOrigen");
-
-                    b.Navigation("TipoMotivo");
                 });
 #pragma warning restore 612, 618
         }

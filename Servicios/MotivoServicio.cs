@@ -10,32 +10,32 @@ using System.Threading.Tasks;
 
 namespace Servicios
 {
-    public class TipoCuentaServicio : ITipoCuentaServicio
+    public class MotivoServicio : IMotivoServicio
     {
         private BancoDBContext _bancoDBContext;
-        public TipoCuentaServicio()
+        public MotivoServicio()
         {
             _bancoDBContext = new BancoDBContext();
         }
 
-        public async Task<RespuestaInterna<bool>> Post(TipoCuenta tipocuenta)
+        public async Task<RespuestaInterna<bool>> Post(TipoMotivo motivo)
         {
             var respuesta = new RespuestaInterna<bool>();
             try
             {
-                var tipocuentaexiste = await _bancoDBContext.TipoCuenta.FirstOrDefaultAsync(tc => tc.Nombre == tipocuenta.Nombre);
-                if (tipocuentaexiste != null)
+                var motivoExiste = await _bancoDBContext.TipoMotivo.FirstOrDefaultAsync(m => m.Nombre == motivo.Nombre);
+                if (motivoExiste != null)
                 {
                     respuesta.Datos = false;
-                    respuesta.Mensaje = "Ya existe el tipo de cuenta";
+                    respuesta.Mensaje = "Ya existe el motivo";
                     return respuesta;
                 }
                 else
                 {
                     respuesta.Datos = true;
                     respuesta.Exito = true;
-                    respuesta.Mensaje = "Tipo cuenta creado exitosamente";
-                    await _bancoDBContext.TipoCuenta.AddAsync(tipocuenta);
+                    respuesta.Mensaje = "Motivo creado exitosamente";
+                    await _bancoDBContext.TipoMotivo.AddAsync(motivo);
                     await _bancoDBContext.SaveChangesAsync();
                     return respuesta;
                 }
@@ -54,19 +54,19 @@ namespace Servicios
             var respuesta = new RespuestaInterna<bool>();
             try
             {
-                var tipocuentaexiste = await _bancoDBContext.TipoCuenta.FirstOrDefaultAsync(t => t.Id == id);
-                if (tipocuentaexiste == null)
+                var tipoMotivoExiste = await _bancoDBContext.TipoMotivo.FirstOrDefaultAsync(tm => tm.Id == id);
+                if (tipoMotivoExiste == null)
                 {
                     respuesta.Datos = false;
-                    respuesta.Mensaje = "No existe el tipo de cuenta";
+                    respuesta.Mensaje = "No existe el motivo";
                     return respuesta;
                 }
                 else
                 {
                     respuesta.Datos = true;
                     respuesta.Exito = true;
-                    respuesta.Mensaje = "Tipo cuenta eliminado correctamente";
-                    _bancoDBContext.TipoCuenta.Remove(tipocuentaexiste);
+                    respuesta.Mensaje = "Motivo eliminado correctamente";
+                    _bancoDBContext.TipoMotivo.Remove(tipoMotivoExiste);
                     await _bancoDBContext.SaveChangesAsync();
                     return respuesta;
                 }
@@ -74,25 +74,25 @@ namespace Servicios
             catch (Exception ex)
             {
                 respuesta.Datos = false;
-                respuesta.Mensaje = "No se pudo eliminar al tipo cuenta. Detalles: " + ex.Message;
+                respuesta.Mensaje = "No se pudo eliminar el motivo. Detalles: " + ex.Message;
                 return respuesta;
             }
         }
 
-        public async Task<RespuestaInterna<List<TipoCuenta>>> Get()
+        public async Task<RespuestaInterna<List<TipoMotivo>>> Get()
         {
-            var respuesta = new RespuestaInterna<List<TipoCuenta>>();
+            var respuesta = new RespuestaInterna<List<TipoMotivo>>();
             try
             {
-                var tipoCuentas = await _bancoDBContext.TipoCuenta.ToListAsync();
-                respuesta.Datos = tipoCuentas;
+                var motivos = await _bancoDBContext.TipoMotivo.ToListAsync();
+                respuesta.Datos = motivos;
                 respuesta.Exito = true;
-                respuesta.Mensaje = "Tipo cuentas recuperados correctamente";
+                respuesta.Mensaje = "Motivos recuperados correctamente";
                 return respuesta;
             }
             catch (Exception ex)
             {
-                respuesta.Mensaje = "No se pudo recuperar a los tipos cuentas. Detalles: " + ex.Message;
+                respuesta.Mensaje = "No se pudo recuperar los motivos. Detalles: " + ex.Message;
                 return respuesta;
             }
         }

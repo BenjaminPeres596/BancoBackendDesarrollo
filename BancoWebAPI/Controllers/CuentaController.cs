@@ -21,11 +21,11 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int dni)
+        [HttpPost("{dniCliente}",Name = "PostCuenta")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int dniCliente)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, dni);
+            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, dniCliente);
             try
             {
                 respuesta.MensajePublico = respuestaInterna.Mensaje;

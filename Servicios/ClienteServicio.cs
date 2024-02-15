@@ -34,6 +34,7 @@ namespace Servicios
             try
             {
                 cliente.Banco = bancoExiste;
+                cliente.EstablecerClave(cliente.Clave);
                 await _bancoDBContext.Cliente.AddAsync(cliente);
                 await _bancoDBContext.SaveChangesAsync();
                 respuesta.Exito = true;
@@ -118,9 +119,9 @@ namespace Servicios
             var respuesta = new RespuestaInterna<Cliente>();
             try
             {
-                var clienteExiste = await _bancoDBContext.Cliente.Where(x => x.Dni == dni && x.Usuario == usuario && x.Clave == contraseña).FirstOrDefaultAsync();
+                var clienteExiste = await _bancoDBContext.Cliente.Where(x => x.Dni == dni && x.Usuario == usuario).FirstOrDefaultAsync();
 
-                if (clienteExiste == null)
+                if (clienteExiste == null || !clienteExiste.VerificarClave(contraseña))
                 {
                     respuesta.Mensaje = "Dni, usuario o contraseña incorrectos, intente nuevamente.";
                     return respuesta;

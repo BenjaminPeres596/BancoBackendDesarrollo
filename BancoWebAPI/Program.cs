@@ -24,6 +24,7 @@ builder.Services.AddScoped<ITipoCuentaServicio, TipoCuentaServicio>();
 builder.Services.AddScoped<IBancoServicio, BancoServicio>();
 builder.Services.AddScoped<ITransferenciaServicio, TransferenciaServicio>();
 builder.Services.AddScoped<IEmpleadoServicio, EmpleadoServicio>();
+builder.Services.AddScoped<IMotivoServicio, MotivoServicio>();
 
 var app = builder.Build();
 

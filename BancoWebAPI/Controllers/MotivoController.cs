@@ -7,22 +7,22 @@ namespace BancoWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TipoCuentaController : ControllerBase
+    public class MotivoController : ControllerBase
     {
-        private readonly ILogger<TipoCuentaController> _logger;
-        private readonly ITipoCuentaServicio _tipoCuentaServicio;
+        private readonly ILogger<MotivoController> _logger;
+        private readonly IMotivoServicio _motivoServicio;
 
-        public TipoCuentaController(ITipoCuentaServicio tipoCuentaServicio, ILogger<TipoCuentaController> logger)
+        public MotivoController(IMotivoServicio motivoServicio, ILogger<MotivoController> logger)
         {
-            _tipoCuentaServicio = tipoCuentaServicio;
+            _motivoServicio = motivoServicio;
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostTipoCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(TipoCuenta tipocuenta)
+        [HttpPost(Name = "PostMotivo")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(TipoMotivo motivo)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _tipoCuentaServicio.Post(tipocuenta);
+            var respuestaInterna = await _motivoServicio.Post(motivo);
             try
             {
                 if (respuestaInterna.Exito == true)
@@ -47,11 +47,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "GetTipoCuentas")]
-        public async Task<ActionResult<RespuestaExterna<List<TipoCuenta>>>> Get()
+        [HttpGet(Name = "GetMotivos")]
+        public async Task<ActionResult<RespuestaExterna<List<TipoMotivo>>>> Get()
         {
-            var respuesta = new RespuestaExterna<List<TipoCuenta>>();
-            var respuestaInterna = await _tipoCuentaServicio.Get();
+            var respuesta = new RespuestaExterna<List<TipoMotivo>>();
+            var respuestaInterna = await _motivoServicio.Get();
             try
             {
                 if (respuestaInterna.Exito == true)
@@ -68,18 +68,18 @@ namespace BancoWebAPI.Controllers
                     return BadRequest(respuesta);
                 }
             }
-            catch 
+            catch
             {
                 respuesta.MensajePublico = respuestaInterna.Mensaje;
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
 
-        [HttpDelete("{idCuenta}",Name = "DeleteTipoCuenta")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int idCuenta)
+        [HttpDelete("{idMotivo}", Name = "DeleteMotivo")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int idMotivo)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _tipoCuentaServicio.Delete(idCuenta);
+            var respuestaInterna = await _motivoServicio.Delete(idMotivo);
             try
             {
                 if (respuestaInterna.Exito == true)

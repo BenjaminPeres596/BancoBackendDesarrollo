@@ -20,6 +20,9 @@ namespace Data.Models
         [ForeignKey("CuentaDestino")]
         public int CuentaDestinoId { get; set; }
         public Cuenta CuentaDestino { get; set; }
+        [ForeignKey("TipoMotivo")]
+        public int TipoMotivoId { get; set; }
+        public TipoMotivo TipoMotivo { get; set; }
     }
 }
 

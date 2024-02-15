@@ -19,10 +19,11 @@ namespace Data.Data
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
         public virtual DbSet<Transferencia> Transferencia { get; set; } 
         public virtual DbSet<Banco> Banco { get; set; }
+        public virtual DbSet<TipoMotivo> TipoMotivo { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=BancoWebAPI;Persist Security Info=True;Password=WebAPIDesarrollo;Username=postgres");
+        => optionsBuilder.UseNpgsql("Host=colosal.duckdns.org;Port=14998;Database=S31-Grupo8-Banco-Generacion;Persist Security Info=True;Password=tallersoft600;Username=postgres");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

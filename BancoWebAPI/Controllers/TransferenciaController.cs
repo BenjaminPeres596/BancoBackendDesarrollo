@@ -18,11 +18,11 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostTransferencias")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino)
+        [HttpPost("{cbuOrigen},{cbuDestino},{monto}.{motivoId}",Name = "PostTransferencias")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, int motivoId)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _transferenciaServicio.Post(transferencia, cbuOrigen, cbuDestino);
+            var respuestaInterna = await _transferenciaServicio.Post(transferencia, cbuOrigen, cbuDestino, monto, motivoId);
             try
             {
                 if (respuestaInterna.Exito == true)
@@ -47,11 +47,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "GetTransferencias")]
-        public async Task<ActionResult<RespuestaExterna<List<Transferencia>>>> Get(int id)
+        [HttpGet("{idCuenta}", Name = "GetTransferencias")]
+        public async Task<ActionResult<RespuestaExterna<List<Transferencia>>>> Get(int idCuenta)
         {
             var respuesta = new RespuestaExterna<List<Transferencia>>();
-            var respuestaInterna = await _transferenciaServicio.Get(id);
+            var respuestaInterna = await _transferenciaServicio.Get(idCuenta);
             try
             {
                 if (respuestaInterna.Exito == true)
