@@ -21,7 +21,7 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostEmpleado")]
+        [HttpPost("Post")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Empleado empleado)
         {
             var respuesta = new RespuestaExterna<bool>();
@@ -40,7 +40,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "GetEmpleados")]
+        [HttpGet("Get")]
         public async Task<ActionResult<RespuestaExterna<List<Empleado>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<Empleado>>();
@@ -67,7 +67,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("{legajo}", Name = "GetEmpleadoPorLegajo")]
+        [HttpGet("GetPorLegajo={legajo}")]
         public async Task<ActionResult<RespuestaExterna<Empleado>>> Get(int legajo)
         {
             var respuesta = new RespuestaExterna<Empleado>();
@@ -94,7 +94,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{legajo}", Name = "DeleteEmpleado")]
+        [HttpDelete("Delete={legajo}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int legajo)
         {
             var respuesta = new RespuestaExterna<bool>();

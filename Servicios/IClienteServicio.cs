@@ -5,7 +5,7 @@ namespace Servicios
 {
     public interface IClienteServicio
     {
-        Task<RespuestaInterna<bool>> AgregarAsync(Cliente cliente);
+        Task<RespuestaInterna<Cliente>> AgregarAsync(Cliente cliente);
         Task<RespuestaInterna<List<Cliente>>> ObtenerAsync();
         Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(int dni);
         Task<RespuestaInterna<bool>> EliminarAsync(int dni);

@@ -21,7 +21,7 @@ namespace TP3.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostCliente")]
+        [HttpPost("Post")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cliente cliente)
         {
             var respuesta = new RespuestaExterna<bool>();
@@ -55,7 +55,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpPost("{dni},{usuario},{contraseña}", Name = "LoginAuth")]
+        [HttpPost("LoginAuth={dni},{usuario},{contraseña}")]
         public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(int dni, string usuario, string contraseña)
         {
             var respuesta = new RespuestaExterna<Cliente>();
@@ -82,7 +82,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet(Name = "GetClientes")]
+        [HttpGet("Get")]
         public async Task<ActionResult<RespuestaExterna<List<Cliente>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<Cliente>>();
@@ -109,7 +109,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet("{dni}", Name = "GetClientePorDni")]
+        [HttpGet("GetPorDni={dni}")]
         public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int dni)
         {
             var respuesta = new RespuestaExterna<Cliente>();
@@ -136,7 +136,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpDelete("{dni}", Name = "EliminarCliente")]
+        [HttpDelete("DeleteCliente={dni}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int dni)
         {
             var respuesta = new RespuestaExterna<bool>();

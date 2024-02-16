@@ -18,7 +18,7 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("{cbuOrigen},{cbuDestino},{monto}.{motivoId}",Name = "PostTransferencias")]
+        [HttpPost("Post={cbuOrigen},{cbuDestino},{monto},{motivoId}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, int motivoId)
         {
             var respuesta = new RespuestaExterna<bool>();
@@ -47,7 +47,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("{idCuenta}", Name = "GetTransferencias")]
+        [HttpGet("Get={idCuenta}")]
         public async Task<ActionResult<RespuestaExterna<List<Transferencia>>>> Get(int idCuenta)
         {
             var respuesta = new RespuestaExterna<List<Transferencia>>();

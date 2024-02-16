@@ -13,20 +13,18 @@ namespace Servicios
         {
             _bancoDBContext = new BancoDBContext();
         }
-        public async Task<RespuestaInterna<bool>> AgregarAsync(Cliente cliente)
+        public async Task<RespuestaInterna<Cliente>> AgregarAsync(Cliente cliente)
         {
-            var respuesta = new RespuestaInterna<bool>();
+            var respuesta = new RespuestaInterna<Cliente>();
             var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Dni == cliente.Dni);
             var bancoExiste = await _bancoDBContext.Banco.FirstOrDefaultAsync(x => x.Id == cliente.BancoId);
             if (clienteExiste != null)
             {
-                respuesta.Datos = false;
                 respuesta.Mensaje = "El cliente ya existe";
                 return respuesta;
             }
             if (bancoExiste == null)
             {
-                respuesta.Datos = false;
                 respuesta.Mensaje = "El banco no existe";
                 return respuesta;
             }
@@ -38,12 +36,11 @@ namespace Servicios
                 await _bancoDBContext.Cliente.AddAsync(cliente);
                 await _bancoDBContext.SaveChangesAsync();
                 respuesta.Exito = true;
-                respuesta.Datos = true;
+                respuesta.Datos = cliente;
                 return respuesta;
             }
             catch (Exception ex)
             {
-                respuesta.Datos = false;
                 respuesta.Mensaje = "No se pudo agregar al cliente. Detalles: " + ex.Message;
                 return respuesta;
             }

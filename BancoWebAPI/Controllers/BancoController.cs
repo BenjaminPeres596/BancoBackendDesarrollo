@@ -21,7 +21,7 @@ namespace TP3.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostBanco")]
+        [HttpPost("Post")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(Banco banco)
         {
             var respuesta = new RespuestaExterna<bool>();
@@ -47,7 +47,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet(Name = "GetBancos")]
+        [HttpGet("Get")]
         public async Task<ActionResult<RespuestaExterna<List<Banco>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<Banco>>();
@@ -74,7 +74,7 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpDelete("{razonSocial}", Name = "EliminarBanco")]
+        [HttpDelete("EliminarBanco={razonSocial}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(string razonSocial)
         {
             var respuesta = new RespuestaExterna<bool>();

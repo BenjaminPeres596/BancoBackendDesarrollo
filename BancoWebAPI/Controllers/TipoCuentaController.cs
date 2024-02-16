@@ -18,7 +18,7 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostTipoCuenta")]
+        [HttpPost("Post")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Post(TipoCuenta tipocuenta)
         {
             var respuesta = new RespuestaExterna<bool>();
@@ -47,7 +47,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet(Name = "GetTipoCuentas")]
+        [HttpGet("Get")]
         public async Task<ActionResult<RespuestaExterna<List<TipoCuenta>>>> Get()
         {
             var respuesta = new RespuestaExterna<List<TipoCuenta>>();
@@ -75,7 +75,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{idCuenta}",Name = "DeleteTipoCuenta")]
+        [HttpDelete("Delete={idCuenta}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int idCuenta)
         {
             var respuesta = new RespuestaExterna<bool>();
