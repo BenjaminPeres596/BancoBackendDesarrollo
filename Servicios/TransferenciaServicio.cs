@@ -50,6 +50,12 @@ namespace Servicios
                     respuesta.Mensaje = "No existe el motivo";
                     return respuesta;
                 }
+                else if (monto <= 0)
+                {
+                    respuesta.Datos = false;
+                    respuesta.Mensaje = "No se puede tener un monto negativo";
+                    return respuesta;
+                }
                 else
                 {
                     transferencia.CuentaDestinoId = cuentaDestinoExiste.Id;
