@@ -115,6 +115,30 @@ namespace Servicios
 
         }
 
+        public async Task<RespuestaInterna<List<Cuenta>>> ObtenerPorCbuAsync(string cbu)
+        {
+            var respuesta = new RespuestaInterna<List<Cuenta>>();
+            var cuentaexiste = await _bancoDBContext.Cuenta.FirstOrDefaultAsync(c => c.Cbu == cbu);
+            if (cuentaexiste == null)
+            {
+                respuesta.Mensaje = "No existe la cuenta, intente con otro CBU.";
+                return respuesta;
+            }
+            try
+            {
+                var cuentas = await _bancoDBContext.Cuenta.Include(x => x.TipoCuenta).Include(x => x.Cliente).Where(x => x.Cbu == cbu).ToListAsync();
+                respuesta.Datos = cuentas;
+                respuesta.Exito = true;
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo recuperar las cuentas del cliente. Detalles: " + ex.Message;
+                return respuesta;
+            }
+
+        }
+
         public async Task<RespuestaInterna<bool>> EliminarAsync(int id, int dni)
         {
             var respuesta = new RespuestaInterna<bool>();

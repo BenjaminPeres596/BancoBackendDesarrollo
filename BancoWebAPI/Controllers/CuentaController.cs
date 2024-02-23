@@ -94,6 +94,33 @@ namespace BancoWebAPI.Controllers
             }
         }
 
+        [HttpGet("GetCuentasPorCbu={cbu}")]
+        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(string cbu)
+        {
+            var respuesta = new RespuestaExterna<List<Cuenta>>();
+            var respuestaInterna = await _cuentaServicio.ObtenerPorCbuAsync(cbu);
+            try
+            {
+                if (respuestaInterna.Exito)
+                {
+                    respuesta.Exito = true;
+                    respuesta.Datos = respuestaInterna.Datos;
+                    respuesta.MensajePublico = "Cuenta recuperada correctamente";
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return BadRequest(respuesta);
+                }
+            }
+            catch
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
+
         [HttpDelete("Delete={id},{dni}")]
         public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int id, int dni)
         {
