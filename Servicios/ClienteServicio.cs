@@ -2,7 +2,12 @@
 using Data.Models;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
+using RestSharp;
+using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace Servicios
 {
@@ -28,7 +33,7 @@ namespace Servicios
                 respuesta.Mensaje = "El banco no existe";
                 return respuesta;
             }
-            
+
             try
             {
                 cliente.Banco = bancoExiste;
@@ -135,6 +140,73 @@ namespace Servicios
             {
                 respuesta.Mensaje = "No se pudo verificar al cliente. Detalles: " + ex.Message;
                 return respuesta;
+            }
+        }
+        // Ejemplo ficticio para corregir los errores CS0136 y CS0103
+        public async Task<RespuestaInterna<ClienteData>> AuthRenaper(string authCode)
+        {
+            var respuesta = new RespuestaInterna<ClienteData>();
+            try
+            {
+                var options = new RestClientOptions("https://colosal.duckdns.org:15001/renaper/api/Auth/loguearJWT")
+                {
+                    //Authenticator = new HttpBasicAuthenticator("username", "password")
+                };
+                //var client = new RestClient(options);
+                var client = new RestClient();
+                //var request = new RestRequest("statuses/home_timeline.json");
+                var JSONCliente = new ClienteJSON
+                {
+                    clientId = "88cd7688-cb2b-4499-8d43-c805a4c734bf",
+                    clientSecret = "12345678",
+                    authorizationCode = authCode
+                };
+                var request = new RestRequest("https://colosal.duckdns.org:15001/renaper/api/Auth/loguearJWT").AddJsonBody(JSONCliente);
+                // The cancellation token comes from the caller. You can still make a call without it.
+                var response = await client.PostAsync<RespuestaInterna<string>>(request);
+
+                // Verificar si la respuesta fue exitosa
+                if (response.Exito)
+                {
+                    // Obtener el JWT de la respuesta
+                    var jwtToken = response.Datos;
+
+                    // Decodificar el JWT en el payload
+                    string[] jwtParts = jwtToken.Split('.');
+                    string payload = jwtParts[1];
+                    byte[] payloadBytes = Convert.FromBase64String(PadBase64String(payload));
+                    string decodedPayload = Encoding.UTF8.GetString(payloadBytes);
+
+                    var clienteData = JsonConvert.DeserializeObject<ClienteData>(decodedPayload);
+
+                    // Asignar el payload decodificado a la respuesta
+                    respuesta.Datos = clienteData;
+                    respuesta.Exito = true;
+                    respuesta.Mensaje = "Cliente validado correctamente";
+                }
+                else
+                {
+                    // En caso de que la respuesta no sea exitosa, asignar el mensaje de la respuesta original
+                    respuesta.Mensaje = response.Mensaje;
+                }
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                respuesta.Mensaje = "No se pudo verificar al cliente. Detalles: " + ex.Message;
+                return respuesta;
+            }
+        }
+
+        // Asegurar que la cadena Base64 tenga la longitud adecuada
+        static string PadBase64String(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2: return base64 + "==";
+                case 3: return base64 + "=";
+                default: return base64;
             }
         }
     }

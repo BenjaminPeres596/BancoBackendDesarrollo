@@ -10,5 +10,24 @@ namespace Servicios
         Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(int dni);
         Task<RespuestaInterna<bool>> EliminarAsync(int dni);
         Task<RespuestaInterna<Cliente>> LoginAuth(int dni ,string usuario, string contraseña);
+        Task<RespuestaInterna<ClienteData>> AuthRenaper(string authCode);
+    }
+
+    public class ClienteData
+    {
+        public string Nombre { get; set; }
+        public string Rol { get; set; }
+        public string Apellido { get; set; }
+        public string Email { get; set; }
+        public string Cuil { get; set; }
+        public bool Estado { get; set; }
+        public bool EstadoCrediticio { get; set; }
+    }
+    public class ClienteJSON
+    {
+        public string clientId { get; set; }
+        public string clientSecret { get; set; }
+        public string authorizationCode { get; set; }
+
     }
 }

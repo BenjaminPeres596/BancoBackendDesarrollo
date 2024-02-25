@@ -161,5 +161,32 @@ namespace TP3.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
             }
         }
+
+        [HttpPost("AuthRenaper={authCode}")]
+        public async Task<ActionResult<RespuestaExterna<ClienteData>>> AuthRenaper(string authCode)
+        {
+            var respuesta = new RespuestaExterna<ClienteData>();
+            var respuestaInterna = await _clienteServicio.AuthRenaper(authCode);
+            try
+            {
+                if (respuestaInterna.Exito)
+                {
+                    respuesta.Exito = true;
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    respuesta.Datos = respuestaInterna.Datos;
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return respuesta;
+                }
+            }
+            catch (Exception ex)
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
     }
 }
