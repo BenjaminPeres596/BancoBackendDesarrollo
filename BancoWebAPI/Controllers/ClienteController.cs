@@ -55,11 +55,11 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpPost("LoginAuth={dni},{usuario},{contraseña}")]
-        public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(int dni, string usuario, string contraseña)
+        [HttpPost("LoginAuth={dni},{usuario},{contraseña},{authCode}")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(int dni, string usuario, string contraseña, string authCode)
         {
             var respuesta = new RespuestaExterna<Cliente>();
-            var respuestaInterna = await _clienteServicio.LoginAuth(dni, usuario, contraseña);
+            var respuestaInterna = await _clienteServicio.LoginAuth(dni, usuario, contraseña, authCode);
             try
             {
                 if (respuestaInterna.Exito)

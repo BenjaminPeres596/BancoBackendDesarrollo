@@ -23,7 +23,7 @@ namespace Servicios
             var respuesta = new RespuestaInterna<bool>();
             try
             {
-                var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Dni == dni);
+                var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Cuil == dni);
                 var tipocuentaexiste = await _bancoDBContext.TipoCuenta.FirstOrDefaultAsync(t => t.Id == cuenta.TipoCuentaId);
                 if (tipocuentaexiste == null)
                 {
@@ -35,7 +35,7 @@ namespace Servicios
                 {
                     respuesta.Datos = true;
                     respuesta.Exito = true;
-                    var cantcuentas = await _bancoDBContext.Cuenta.CountAsync(c => c.Cliente.Dni == dni);
+                    var cantcuentas = await _bancoDBContext.Cuenta.CountAsync(c => c.Cliente.Cuil == dni);
                     var ultimacuenta = await _bancoDBContext.Cuenta.OrderByDescending(c => c.Cbu).FirstOrDefaultAsync();
                     if (ultimacuenta != null)
                     {
@@ -94,7 +94,7 @@ namespace Servicios
         public async Task<RespuestaInterna<List<Cuenta>>> ObtenerPorDniAsync(int dni)
         {
             var respuesta = new RespuestaInterna<List<Cuenta>>();
-            var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Dni == dni);
+            var clienteexiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(c => c.Cuil == dni);
             if (clienteexiste == null)
             {
                 respuesta.Mensaje = "No existe el cliente, intente con otro CUIT.";
@@ -102,7 +102,7 @@ namespace Servicios
             }
             try
             {
-                var cuentas = await _bancoDBContext.Cuenta.Include(x => x.TipoCuenta).Include(x => x.Cliente).Where(x => x.Cliente.Dni == dni).ToListAsync();
+                var cuentas = await _bancoDBContext.Cuenta.Include(x => x.TipoCuenta).Include(x => x.Cliente).Where(x => x.Cliente.Cuil == dni).ToListAsync();
                 respuesta.Datos = cuentas;
                 respuesta.Exito = true;
                 return respuesta;
@@ -142,14 +142,14 @@ namespace Servicios
         public async Task<RespuestaInterna<bool>> EliminarAsync(int id, int dni)
         {
             var respuesta = new RespuestaInterna<bool>();
-            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Dni == dni);
+            var clienteExiste = await _bancoDBContext.Cliente.FirstOrDefaultAsync(x => x.Cuil == dni);
             if (clienteExiste == null)
             {
                 respuesta.Datos = false;
                 respuesta.Mensaje = "El cliente no existe, intente con otro DNI.";
                 return respuesta;
             }
-            var cuentas = await _bancoDBContext.Cuenta.Where(x => x.Cliente.Dni == dni).ToListAsync();
+            var cuentas = await _bancoDBContext.Cuenta.Where(x => x.Cliente.Cuil == dni).ToListAsync();
             var cuentaCliente = cuentas.FirstOrDefault(x => x.Id == id);
             if (cuentaCliente == null)
             {

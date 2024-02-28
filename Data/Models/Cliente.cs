@@ -14,7 +14,7 @@ namespace Data.Models
         public string Usuario { get; set; }
         public string Clave { get; set; }
         public string Sal { get; set; }
-        public long Dni { get; set; }
+        public long Cuil { get; set; }
         public string Mail { get; set; }
         public int BancoId { get; set; }
         public Banco Banco { get; set; }
