@@ -188,13 +188,29 @@ namespace Servicios
                 }
 
                 var cuentaBancoExternoResponse = await _cuentaServicio.ObtenerPorCbuAsync(transferenciaExterna.origin_cbu);
+                var cuentaBancoExterno = cuentaBancoExternoResponse.Datos;
+
                 if (!cuentaBancoExternoResponse.Exito)
                 {
                     respuesta.Mensaje = cuentaBancoExternoResponse.Mensaje;
-                    return respuesta;
+                    await _cuentaServicio.CrearCuentaExterna(transferenciaExterna.origin_cbu);
+
+                    // Obtener la cuenta desde la respuesta interna
+                    var respuestaCuentaExterna = await _cuentaServicio.ObtenerPorCbuAsync(transferenciaExterna.origin_cbu);
+
+                    // Verificar si la respuesta es exitosa antes de asignar la cuenta
+                    if (respuestaCuentaExterna.Exito)
+                    {
+                        cuentaBancoExterno = respuestaCuentaExterna.Datos;
+                    }
+                    else
+                    {
+                        // Manejar el caso de fallo
+                        respuesta.Mensaje = "Error al obtener la cuenta externa. Detalles: " + respuestaCuentaExterna.Mensaje;
+                        return respuesta;
+                    }
                 }
 
-                var cuentaBancoExterno = cuentaBancoExternoResponse.Datos;
                 if (cuentaBancoExterno == null)
                 {
                     var respuestaCrearCuenta = await _cuentaServicio.CrearCuentaExterna(transferenciaExterna.origin_cbu);
