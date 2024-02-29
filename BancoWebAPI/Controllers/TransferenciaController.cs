@@ -18,11 +18,11 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Post={cbuOrigen},{cbuDestino},{monto},{motivoId}")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, int motivoId)
+        [HttpPost("Post={cbuOrigen},{cbuDestino},{monto},{motivo}")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, string motivo)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _transferenciaServicio.Post(transferencia, cbuOrigen, cbuDestino, monto, motivoId);
+            var respuestaInterna = await _transferenciaServicio.Post(transferencia, cbuOrigen, cbuDestino, monto, motivo);
             try
             {
                 if (respuestaInterna.Exito == true)
@@ -37,6 +37,34 @@ namespace BancoWebAPI.Controllers
                     respuesta.MensajePublico = respuestaInterna.Mensaje;
                     respuesta.Datos = true;
                     return BadRequest(respuesta);
+                }
+            }
+            catch
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                respuesta.Datos = respuestaInterna.Datos;
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
+
+        [HttpPost("PostExterno")]
+        public async Task<ActionResult<RespuestaExterna<Transferencia>>> PostExterno (TransferenciaJSON transferenciaExterna)
+        {
+            var respuesta = new RespuestaExterna<Transferencia>();
+            var respuestaInterna = await _transferenciaServicio.PostTransferenciaExterna(transferenciaExterna);
+            try
+            {
+                if (respuestaInterna.Exito == true)
+                {
+                    respuesta.Datos = respuestaInterna.Datos;
+                    respuesta.Exito = true;
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.MensajePublico = respuestaInterna.Mensaje;
+                    return respuesta;
                 }
             }
             catch

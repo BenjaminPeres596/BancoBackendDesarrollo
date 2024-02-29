@@ -21,11 +21,30 @@ namespace BancoWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Post={dniCliente}")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, int dniCliente)
+        [HttpPost("Post={cuil}")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Post(Cuenta cuenta, long cuil)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, dniCliente);
+            var respuestaInterna = await _cuentaServicio.CrearCuentaAsync(cuenta, cuil);
+            try
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                respuesta.Datos = respuestaInterna.Datos;
+                respuesta.Exito = respuestaInterna.Exito;
+                return respuesta;
+            }
+            catch
+            {
+                respuesta.MensajePublico = respuestaInterna.Mensaje;
+                return StatusCode(StatusCodes.Status500InternalServerError, respuesta);
+            }
+        }
+
+        [HttpPost("PostCuentaExterna={cbu}")]
+        public async Task<ActionResult<RespuestaExterna<Cuenta>>> PostCuentaExterna(string cbu)
+        {
+            var respuesta = new RespuestaExterna<Cuenta>();
+            var respuestaInterna = await _cuentaServicio.CrearCuentaExterna(cbu);
             try
             {
                 respuesta.MensajePublico = respuestaInterna.Mensaje;
@@ -67,11 +86,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("GetCuentasPorDni={dni}")]
-        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(int dni)
+        [HttpGet("GetCuentasPorDni={cuil}")]
+        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(long cuil)
         {
             var respuesta = new RespuestaExterna<List<Cuenta>>();
-            var respuestaInterna = await _cuentaServicio.ObtenerPorDniAsync(dni);
+            var respuestaInterna = await _cuentaServicio.ObtenerPorCuilAsync(cuil);
             try
             {
                 if (respuestaInterna.Exito)
@@ -95,9 +114,9 @@ namespace BancoWebAPI.Controllers
         }
 
         [HttpGet("GetCuentasPorCbu={cbu}")]
-        public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(string cbu)
+        public async Task<ActionResult<RespuestaExterna<Cuenta>>> Get(string cbu)
         {
-            var respuesta = new RespuestaExterna<List<Cuenta>>();
+            var respuesta = new RespuestaExterna<Cuenta>();
             var respuestaInterna = await _cuentaServicio.ObtenerPorCbuAsync(cbu);
             try
             {
@@ -121,11 +140,11 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpDelete("Delete={id},{dni}")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int id, int dni)
+        [HttpDelete("Delete={id},{cuil}")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int id, long cuil)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _cuentaServicio.EliminarAsync(id,dni);
+            var respuestaInterna = await _cuentaServicio.EliminarAsync(id,cuil);
             try
             {
                 if (respuestaInterna.Exito)
@@ -137,7 +156,7 @@ namespace BancoWebAPI.Controllers
                 else
                 {
                     if (respuestaInterna.Mensaje.Contains("cuit")){
-                        respuesta.MensajePublico = "Intente con otro DNI.";
+                        respuesta.MensajePublico = "Intente con otro CUIL.";
                     }
                     if (respuestaInterna.Mensaje.Contains("cuenta"))
                     {

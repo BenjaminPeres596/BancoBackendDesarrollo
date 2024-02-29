@@ -12,6 +12,7 @@ namespace Servicios
     {
         Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, string motivoNombre);
         Task<RespuestaInterna<List<Transferencia>>> Get(int id);
+        Task<RespuestaInterna<Transferencia>> PostTransferenciaExterna(TransferenciaJSON transferencia);
     }
 
     public class TransferenciaJSON

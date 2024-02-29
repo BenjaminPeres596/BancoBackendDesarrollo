@@ -10,10 +10,11 @@ namespace Servicios
 {
     public interface ICuentaServicio
     {
-        Task<RespuestaInterna<bool>> CrearCuentaAsync(Cuenta cuenta, int cuil);
+        Task<RespuestaInterna<bool>> CrearCuentaAsync(Cuenta cuenta, long cuil);
         Task<RespuestaInterna<List<Cuenta>>> ObtenerAsync();
-        Task<RespuestaInterna<List<Cuenta>>> ObtenerPorDniAsync(int cuil);
-        Task<RespuestaInterna<List<Cuenta>>> ObtenerPorCbuAsync(string cbu);
-        Task<RespuestaInterna<bool>> EliminarAsync(int id, int cuil);
+        Task<RespuestaInterna<List<Cuenta>>> ObtenerPorCuilAsync(long cuil);
+        Task<RespuestaInterna<Cuenta>> ObtenerPorCbuAsync(string cbu);
+        Task<RespuestaInterna<bool>> EliminarAsync(int id, long cuil);
+        Task<RespuestaInterna<Cuenta>> CrearCuentaExterna(string cbuCuenta);
     }
 }
