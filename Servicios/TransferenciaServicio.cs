@@ -167,6 +167,7 @@ namespace Servicios
         public async Task<RespuestaInterna<Transferencia>> PostTransferenciaExterna(TransferenciaJSON transferenciaExterna)
         {
             var respuesta = new RespuestaInterna<Transferencia>();
+            using var transaction = await _bancoDBContext.Database.BeginTransactionAsync();
             try
             {
                 if (transferenciaExterna.amount <= 0)
@@ -230,6 +231,8 @@ namespace Servicios
 
                 cuentaDestino.Saldo = cuentaDestino.Saldo + transferencia.Monto;
 
+                _bancoDBContext.Entry(cuentaDestino).State = EntityState.Modified;
+
                 respuesta.Datos = transferencia;
                 respuesta.Exito = true;
                 respuesta.Mensaje = "Transferencia exitosa";
@@ -237,10 +240,13 @@ namespace Servicios
                 await _bancoDBContext.Transferencia.AddAsync(transferencia);
                 await _bancoDBContext.SaveChangesAsync();
 
+                await transaction.CommitAsync(); // Commit de la transacción si todo fue exitoso
+
                 return respuesta;
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync(); // Rollback de la transacción en caso de error
                 respuesta.Mensaje = "Error al realizar la transferencia. Detalles: " + ex.Message;
                 respuesta.Exito = false;
 
