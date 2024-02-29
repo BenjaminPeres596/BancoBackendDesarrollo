@@ -10,7 +10,7 @@ namespace Servicios
 {
     public interface ITransferenciaServicio
     {
-        Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, int MotivoId);
+        Task<RespuestaInterna<bool>> Post(Transferencia transferencia, string cbuOrigen, string cbuDestino, float monto, string motivoNombre);
         Task<RespuestaInterna<List<Transferencia>>> Get(int id);
     }
 
