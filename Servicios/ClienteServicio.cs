@@ -73,7 +73,7 @@ namespace Servicios
 
         }
 
-        public async Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(long cuil)
+        public async Task<RespuestaInterna<Cliente>> ObtenerPorCuilAsync(long cuil)
         {
             var respuesta = new RespuestaInterna<Cliente>();
             var clienteExiste = await _bancoDBContext.Cliente.Include(x => x.Banco).FirstOrDefaultAsync(x => x.Cuil == cuil);
@@ -140,7 +140,7 @@ namespace Servicios
                 }
                 else if (clienteExiste == null || !clienteExiste.VerificarClave(contraseña))
                 {
-                    respuesta.Mensaje = "Dni, usuario o contraseña incorrectos, intente nuevamente.";
+                    respuesta.Mensaje = "Cuil, usuario o contraseña incorrectos, intente nuevamente.";
                     return respuesta;
                 }
                 else if (long.Parse(respuestaRenaper.Datos.Cuil) != clienteExiste.Cuil)

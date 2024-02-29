@@ -166,6 +166,17 @@ namespace Servicios
 
         public async Task<RespuestaInterna<Transferencia>> PostTransferenciaExterna(TransferenciaJSON transferenciaExterna)
         {
+            /*var options = new RestClientOptions("https://colosal.duckdns.org:15001/MilagroFinanciero/api/Auth/loguearJWT");
+            var client = new RestClient();
+            var JSONCliente = new ClienteJSON
+            {
+                clientId = "88cd7688-cb2b-4499-8d43-c805a4c734bf",
+                clientSecret = "12345678",
+                authorizationCode = authCode
+            };
+            var request = new RestRequest("https://colosal.duckdns.org:15001/renaper/api/Auth/loguearJWT").AddJsonBody(JSONCliente);
+            var response = await client.PostAsync<RespuestaInterna<string>>(request);*/
+
             var respuesta = new RespuestaInterna<Transferencia>();
             using var transaction = await _bancoDBContext.Database.BeginTransactionAsync();
             try

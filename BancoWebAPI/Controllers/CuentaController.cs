@@ -86,7 +86,7 @@ namespace BancoWebAPI.Controllers
             }
         }
 
-        [HttpGet("GetCuentasPorDni={cuil}")]
+        [HttpGet("GetCuentasPorCuil={cuil}")]
         public async Task<ActionResult<RespuestaExterna<List<Cuenta>>>> Get(long cuil)
         {
             var respuesta = new RespuestaExterna<List<Cuenta>>();

@@ -55,11 +55,11 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpPost("LoginAuth={dni},{usuario},{contraseña},{authCode}")]
-        public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(int dni, string usuario, string contraseña, string authCode)
+        [HttpPost("LoginAuth={cuil},{usuario},{contraseña},{authCode}")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> PostLogin(long cuil, string usuario, string contraseña, string authCode)
         {
             var respuesta = new RespuestaExterna<Cliente>();
-            var respuestaInterna = await _clienteServicio.LoginAuth(dni, usuario, contraseña, authCode);
+            var respuestaInterna = await _clienteServicio.LoginAuth(cuil, usuario, contraseña, authCode);
             try
             {
                 if (respuestaInterna.Exito)
@@ -109,11 +109,11 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpGet("GetPorDni={dni}")]
-        public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(int dni)
+        [HttpGet("GetPorCuil={cuil}")]
+        public async Task<ActionResult<RespuestaExterna<Cliente>>> Get(long cuil)
         {
             var respuesta = new RespuestaExterna<Cliente>();
-            var respuestaInterna = await _clienteServicio.ObtenerPorDniAsync(dni);
+            var respuestaInterna = await _clienteServicio.ObtenerPorCuilAsync(cuil);
             try
             {
                 if (respuestaInterna.Exito)
@@ -136,11 +136,11 @@ namespace TP3.Controllers
             }
         }
 
-        [HttpDelete("DeleteCliente={dni}")]
-        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(int dni)
+        [HttpDelete("DeleteCliente={cuil}")]
+        public async Task<ActionResult<RespuestaExterna<bool>>> Delete(long cuil)
         {
             var respuesta = new RespuestaExterna<bool>();
-            var respuestaInterna = await _clienteServicio.EliminarAsync(dni);
+            var respuestaInterna = await _clienteServicio.EliminarAsync(cuil);
             try
             {
                 if (respuestaInterna.Exito)

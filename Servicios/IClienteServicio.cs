@@ -7,7 +7,7 @@ namespace Servicios
     {
         Task<RespuestaInterna<Cliente>> AgregarAsync(Cliente cliente);
         Task<RespuestaInterna<List<Cliente>>> ObtenerAsync();
-        Task<RespuestaInterna<Cliente>> ObtenerPorDniAsync(long cuil);
+        Task<RespuestaInterna<Cliente>> ObtenerPorCuilAsync(long cuil);
         Task<RespuestaInterna<bool>> EliminarAsync(long cuil);
         Task<RespuestaInterna<Cliente>> LoginAuth(long cuil ,string usuario, string contraseña, string authCode);
         Task<RespuestaInterna<ClienteData>> AuthRenaper(string authCode);
